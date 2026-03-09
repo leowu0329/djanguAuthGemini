@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}登入 - MyProject{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0 rounded-3 mt-5">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">會員登入</h2>
+                    <p class="text-muted small">歡迎回來，請輸入您的帳號資訊</p>
+                </div>
+
+                <div class="d-grid gap-2 mb-4">
+                    <a href="{% provider_login_url 'google' %}" class="btn-google">
+                        <div class="google-icon-wrapper">
+                            <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google logo" />
+                        </div>
+                        <span class="btn-text">使用 Google 帳號登入</span>
+                    </a>
+                </div>
+
+                <div class="position-relative mb-4">
+                    <hr class="text-muted">
+                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">或使用電子郵件</span>
+                </div>
+
+                <form class="login" method="POST" action="{% url 'account_login' %}">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger py-2 small">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.login.id_for_label }}" class="form-label fw-bold small">帳號或 Email</label>
+                        {{ form.login }}
+                        {% if form.login.errors %}
+                            <div class="text-danger small mt-1">{{ form.login.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <label for="{{ form.password.id_for_label }}" class="form-label fw-bold small">密碼</label>
+                            <a href="{% url 'account_reset_password' %}" class="small text-decoration-none">忘記密碼？</a>
+                        </div>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <div class="text-danger small mt-1">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-check mb-4">
+                        {{ form.remember }}
+                        <label class="form-check-label small text-muted" for="{{ form.remember.id_for_label }}">
+                            保持登入狀態
+                        </label>
+                    </div>
+
+                    {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+
+                    <div class="d-grid">
+                        <button class="btn btn-primary btn-lg fw-bold py-2" type="submit">立即登入</button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4 pt-2">
+                    <p class="small text-muted mb-0">還沒有帳號嗎？ <a href="{% url 'account_signup' %}" class="fw-bold text-decoration-none">免費註冊</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Google 官方風格按鈕 */
+    .btn-google {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #ffffff;
+        color: #757575;
+        border: 1px solid #dadce0;
+        border-radius: 4px;
+        padding: 2px;
+        text-decoration: none;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+        transition: box-shadow .3s ease, background-color .3s ease;
+        box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    }
+    .btn-google:hover {
+        background-color: #f8f9fa;
+        box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+        color: #3c4043;
+    }
+    .google-icon-wrapper {
+        background-color: #fff;
+        padding: 8px;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .google-icon { width: 18px; height: 18px; }
+    .btn-text { margin: 0 24px 0 8px; font-size: 14px; letter-spacing: 0.2px; }
+
+    /* 表單元件微調 */
+    input[type="text"], input[type="password"], input[type="email"] {
+        border-radius: 8px;
+        padding: 0.6rem 0.75rem;
+    }
+</style>
+{% endblock %}

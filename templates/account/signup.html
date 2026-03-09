@@ -1,0 +1,130 @@
+{% load i18n %}
+{% load account socialaccount %}
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>註冊新帳號 - 系統首頁</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Roboto', 'Noto Sans TC', sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        .signup-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: white;
+        }
+        .signup-card h2 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .signup-card p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        /* 美化 Django 自動生成的表單 input */
+        .signup-card input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 0.25rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            display: block;
+        }
+        .signup-card label {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            margin-top: 0.8rem;
+            color: #444;
+        }
+        /* 輔助文字與錯誤訊息 */
+        .helptext {
+            display: block;
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .errorlist {
+            color: #dc3545;
+            list-style: none;
+            padding-left: 0;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .btn-signup {
+            width: 100%;
+            padding: 0.75rem;
+            font-weight: 700;
+            border-radius: 0.5rem;
+            background-color: #198754; /* 綠色區分登入與註冊 */
+            border: none;
+            color: white;
+            transition: 0.3s;
+            margin-top: 1.5rem;
+        }
+        .btn-signup:hover {
+            background-color: #157347;
+        }
+        .extra-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="signup-card">
+    <h2>加入會員</h2>
+    <p class="subtitle">填寫以下資訊以建立您的帳號</p>
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        
+        {# 顯示全域錯誤 #}
+        {{ form.non_field_errors }}
+
+        {# 遍歷所有欄位以套用樣式 #}
+        {% for field in form %}
+            <div class="field-wrapper">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <span class="helptext">{{ field.help_text|safe }}</span>
+                {% endif %}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+
+        <button class="btn-signup" type="submit">確認註冊</button>
+    </form>
+
+    <div class="extra-links">
+        <hr>
+        <p>已經有帳號了？ <a href="{% url 'account_login' %}">點此登入</a></p>
+    </div>
+</div>
+
+</body>
+</html>
